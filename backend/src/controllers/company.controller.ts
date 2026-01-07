@@ -25,7 +25,7 @@ export const createCompany = async (req: Request, res: Response) => {
         res.status(201).json(company);
     } catch (error: any) {
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ errors: error.errors });
+            return res.status(400).json({ errors: error.issues });
         }
         res.status(500).json({ message: "Internal server error" });
     }
@@ -80,7 +80,7 @@ export const updateCompany = async (req: Request, res: Response) => {
         res.json(company);
     } catch (error: any) {
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ errors: error.errors });
+            return res.status(400).json({ errors: error.issues });
         }
         res.status(500).json({ message: "Internal server error" });
     }
