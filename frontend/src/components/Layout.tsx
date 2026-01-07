@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building2, MapPin, Users, Calendar, ClipboardList, Briefcase, UserCheck, LogOut, Menu } from 'lucide-react';
+import { LayoutDashboard, Building2, MapPin, Users, Calendar, ClipboardList, Briefcase, UserCheck, FileText } from 'lucide-react';
 
 const Layout: React.FC = () => {
     const location = useLocation();

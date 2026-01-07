@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { processAttendance, getDailyAttendance } from '../../services/api';
-import { RefreshCw, Calendar as CalendarIcon, CheckCircle, XCircle } from 'lucide-react';
+import { RefreshCw, Calendar as CalendarIcon } from 'lucide-react';
 
 const AttendanceDashboard: React.FC = () => {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
