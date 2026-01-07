@@ -5,29 +5,12 @@ import { LayoutDashboard, Building2, MapPin, Users, Calendar, ClipboardList, Bri
 const Layout: React.FC = () => {
     const location = useLocation();
 
-    // Define navigation items
-    const navItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { type: 'heading', label: 'Master Data' },
-        { icon: Building2, label: 'Companies', path: '/companies' },
-        { icon: Building2, label: 'Branches', path: '/branches' },
-        { icon: MapPin, label: 'Locations', path: '/locations' },
-        { icon: Briefcase, label: 'Departments', path: '/departments' },
-        { icon: UserCheck, label: 'Designations', path: '/designations' },
-        { type: 'heading', label: 'HR & Ops' },
-        { icon: Users, label: 'Employees', path: '/employees' },
-        { icon: Calendar, label: 'Shifts', path: '/shifts' },
-        { icon: ClipboardList, label: 'Attendance', path: '/attendance' },
-        { icon: Calendar, label: 'Leaves', path: '/leaves' },
-        { icon: FileText, label: 'Reports', path: '/reports' },
-    ];
+    // Navigation items commented out or removed as we use hardcoded links below
+    // const navItems = ... 
+
+    // const handleLogout = ...
 
     const isActive = (path: string) => location.pathname.startsWith(path) ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white';
-
-    const handleLogout = () => {
-        // Implement logout logic here
-        console.log('Logging out...');
-    };
 
     return (
         <div className="flex h-screen bg-gray-100">

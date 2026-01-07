@@ -1,0 +1,8 @@
+﻿
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/components/Layout.tsx(9,11): error TS6133: 'navItems' is declared but its value is never read.
+src/components/Layout.tsx(27,11): error TS6133: 'handleLogout' is declared but its value is never read.
+src/context/AuthContext.tsx(2,1): error TS6133: 'useNavigate' is declared but its value is never read.
+src/pages/Reports/MonthlyReport.tsx(3,22): error TS6133: 'CalendarIcon' is declared but its value is never read.

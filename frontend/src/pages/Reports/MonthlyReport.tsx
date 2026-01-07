@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getMonthlyReport } from '../../services/api';
-import { Calendar as CalendarIcon, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MonthlyReport: React.FC = () => {
     const today = new Date();
