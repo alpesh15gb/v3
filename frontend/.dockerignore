@@ -2,6 +2,8 @@ node_modules
 npm-debug.log
 dist
 .env
+.env.local
+.env.development
 *.log
 .git
 .gitignore
@@ -11,3 +13,4 @@ coverage
 .DS_Store
 build_log.txt
 build_log_2.txt
+!.env.production
