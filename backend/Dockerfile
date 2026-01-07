@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install all dependencies
-RUN npm ci --only=production=false
+# Install all dependencies (using install instead of ci since package-lock may be Windows-generated)
+RUN npm install --production=false
 
 # Generate Prisma Client
 RUN npx prisma generate
