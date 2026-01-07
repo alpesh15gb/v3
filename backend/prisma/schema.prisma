@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  branches  Branch[]
+  employees Employee[]
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  locations Location[]
+  departments Department[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  employees Employee[]
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  employees Employee[]
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id])
+  designations Designation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  employees Employee[]
+}
+
+model Designation {
+  id           String     @id @default(uuid())
+  title        String
+  code         String     @unique
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  employees    Employee[]
+}
+
+model Employee {
+  id            String      @id @default(uuid())
+  firstName     String
+  lastName      String?
+  employeeCode  String      @unique
+  email         String?     @unique
+  phone         String?
+  dateOfJoining DateTime
+  isActive      Boolean     @default(true)
+  
+  password      String?     // Nullable for migration, but should be required logic-wise
+  role          String      @default("EMPLOYEE") // ADMIN, MANAGER, EMPLOYEE
+  
+  companyId     String
+  company       Company     @relation(fields: [companyId], references: [id])
+  
+  branchId      String
+  branch        Branch      @relation(fields: [branchId], references: [id])
+  
+  departmentId  String?
+  department    Department? @relation(fields: [departmentId], references: [id])
+  
+  designationId String?
+  designation   Designation? @relation(fields: [designationId], references: [id])
+  
+  locationId    String?
+  location      Location?   @relation(fields: [locationId], references: [id])
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  shiftAssignments ShiftAssignment[]
+  dailyAttendance DailyAttendance[]
+  leaveRequests LeaveRequest[]
+}
+
+model Shift {
+  id            String      @id @default(uuid())
+  name          String
+  code          String      @unique
+  startTime     String      // Format HH:mm
+  endTime       String      // Format HH:mm
+  breakDuration Int         @default(0) // Minutes
+  graceTime     Int         @default(0) // Minutes
+  
+  description   String?
+  
+  assignments   ShiftAssignment[]
+  dailyAttendance DailyAttendance[]
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model AttendanceLog {
+  id           String   @id @default(uuid())
+  deviceId     String?
+  employeeCode String
+  punchTime    DateTime
+  direction    String   @default("AUTO") // IN, OUT, AUTO
+  createdAt    DateTime @default(now())
+  
+  @@index([employeeCode, punchTime])
+}
+
+model DailyAttendance {
+  id              String   @id @default(uuid())
+  employeeId      String
+  employee        Employee @relation(fields: [employeeId], references: [id])
+  
+  date            DateTime // Only Date part stored logically
+  
+  shiftId         String?
+  shift           Shift?   @relation(fields: [shiftId], references: [id])
+  
+  inTime          DateTime?
+  outTime         DateTime?
+  
+  status          String   @default("ABSENT") // PRESENT, ABSENT, WEEKOFF, HOLIDAY, LEAVE
+  
+  totalHours      Float    @default(0)
+  lateInMinutes   Int      @default(0)
+  earlyOutMinutes Int      @default(0)
+  overtimeMinutes Int      @default(0)
+  
+  isFinalized     Boolean  @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([employeeId, date])
+}
+
+model ShiftAssignment {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  shiftId     String
+  shift       Shift    @relation(fields: [shiftId], references: [id])
+  
+  fromDate    DateTime
+  toDate      DateTime? // Null means indefinite
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LeaveType {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  daysAllowed Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  requests    LeaveRequest[]
+}
+
+model LeaveRequest {
+  id            String   @id @default(uuid())
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id])
+  
+  leaveTypeId   String
+  leaveType     LeaveType @relation(fields: [leaveTypeId], references: [id])
+  
+  fromDate      DateTime
+  toDate        DateTime
+  reason        String?
+  
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  approvedById  String? // Could link to Employee/User in future
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
