@@ -75,9 +75,13 @@ model Employee {
   dateOfJoining DateTime
   isActive      Boolean     @default(true)
   
-  password      String?     // Nullable for migration, but should be required logic-wise
+  password      String?
   role          String      @default("EMPLOYEE") // ADMIN, MANAGER, EMPLOYEE
   
+  // Legacy Migration Fields
+  legacyId      Int?        @unique
+  photo         String?    
+
   companyId     String
   company       Company     @relation(fields: [companyId], references: [id])
   
@@ -98,6 +102,7 @@ model Employee {
   shiftAssignments ShiftAssignment[]
   dailyAttendance DailyAttendance[]
   leaveRequests LeaveRequest[]
+  regularizationRequests RegularizationRequest[]
 }
 
 model Shift {
@@ -109,6 +114,10 @@ model Shift {
   breakDuration Int         @default(0) // Minutes
   graceTime     Int         @default(0) // Minutes
   
+  // Minimum work duration to count as Present/HalfDay
+  halfDayMinMinutes Int     @default(240) // 4 Hours
+  fullDayMinMinutes Int     @default(480) // 8 Hours
+
   description   String?
   
   assignments   ShiftAssignment[]
@@ -150,10 +159,14 @@ model DailyAttendance {
   overtimeMinutes Int      @default(0)
   
   isFinalized     Boolean  @default(false)
+  isManualEntry   Boolean  @default(false)
+  remarks         String?
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
+  corrections     AttendanceCorrection[]
+
   @@unique([employeeId, date])
 }
 
@@ -197,8 +210,52 @@ model LeaveRequest {
   
   status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
   
-  approvedById  String? // Could link to Employee/User in future
+  approvedById  String? 
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model RegularizationRequest {
+  id            String   @id @default(uuid())
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id])
+  
+  date          DateTime
+  type          String   // MISSED_PUNCH, ON_DUTY, WORK_FROM_HOME
+  reason        String?
+  
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  approvedById  String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Holiday {
+  id          String   @id @default(uuid())
+  date        DateTime
+  name        String
+  type        String?  // NATIONAL, RESTRICTED
+  
+  // Optional: Link holiday to specific location/branch
+  locationId  String?  // Ensure this field exists in Schema if Relation is added, but for now kept simple
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AttendanceCorrection {
+  id                String   @id @default(uuid())
+  dailyAttendanceId String
+  dailyAttendance   DailyAttendance @relation(fields: [dailyAttendanceId], references: [id])
+  
+  fieldName         String
+  oldValue          String?
+  newValue          String?
+  
+  reason            String?
+  correctedBy       String?
+  
+  createdAt         DateTime @default(now())
 }
