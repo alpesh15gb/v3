@@ -12,11 +12,11 @@ COPY prisma ./prisma/
 # Install all dependencies (using install instead of ci since package-lock may be Windows-generated)
 RUN npm install --production=false
 
+# Copy source code (needed for prisma generate to work properly)
+COPY . .
+
 # Generate Prisma Client
 RUN npx prisma generate
-
-# Copy source code
-COPY . .
 
 # Build TypeScript
 RUN npm run build
