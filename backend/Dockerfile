@@ -15,7 +15,11 @@ RUN npm install --production=false
 # Copy source code
 COPY . .
 
-# Build TypeScript (skip prisma generate for now, do it at runtime)
+# Generate Prisma Client (required for TypeScript compilation)
+# Using a dummy DATABASE_URL since Prisma validates the datasource during generation
+RUN DATABASE_URL="postgresql://user:pass@localhost:5432/db" npx prisma generate || true
+
+# Build TypeScript
 RUN npm run build
 
 # Production Stage
