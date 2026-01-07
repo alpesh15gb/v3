@@ -12,10 +12,13 @@ COPY prisma ./prisma/
 # Install all dependencies (using install instead of ci since package-lock may be Windows-generated)
 RUN npm install --production=false
 
-# Copy source code (needed for prisma generate to work properly)
+# Copy source code
 COPY . .
 
-# Generate Prisma Client
+# Set Prisma environment variables for binary platform
+ENV PRISMA_CLI_BINARY_TARGETS="linux-musl-openssl-3.0.x,debian-openssl-3.0.x"
+
+# Generate Prisma Client (now that all files are present)
 RUN npx prisma generate
 
 # Build TypeScript
