@@ -1,0 +1,5 @@
+﻿
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/components/Layout.tsx(3,100): error TS6133: 'FileText' is declared but its value is never read.
