@@ -6,7 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies including devDependencies for build
+# Install dependencies
+# Remove package-lock.json to avoid Windows/Linux conflicts and force fresh resolution
+RUN rm -f package-lock.json
 RUN npm install
 RUN npx prisma generate
 
