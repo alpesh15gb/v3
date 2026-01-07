@@ -15,7 +15,8 @@ RUN npm install --production=false
 # Copy source code
 COPY . .
 
-# Set Prisma environment variables for binary platform
+# Set required environment variables for Prisma
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy?schema=public"
 ENV PRISMA_CLI_BINARY_TARGETS="linux-musl-openssl-3.0.x,debian-openssl-3.0.x"
 
 # Generate Prisma Client (now that all files are present)
