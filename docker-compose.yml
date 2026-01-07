@@ -34,7 +34,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:5001/api
     container_name: attendance_frontend_prod
+    environment:
+      - VITE_API_URL=http://localhost:5001/api
     ports:
       - "8080:80"
     restart: always
