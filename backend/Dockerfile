@@ -3,16 +3,18 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apk add --no-cache openssl
+# Install OpenSSL and Build Tools (needed for some npm packages)
+RUN apk add --no-cache openssl python3 make g++
 
 COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install dependencies
-# Remove package-lock.json to avoid Windows/Linux conflicts and force fresh resolution
+# Remove package-lock.json to avoid Windows/Linux conflicts
 RUN rm -f package-lock.json
-RUN npm install
+# Install without running scripts first to prevent postinstall failures (like Prisma engine download issues) blocking the build
+RUN npm install --ignore-scripts --no-audit
+# Explicitly generate Prisma client (this will download engines if needed)
 RUN npx prisma generate
 
 COPY . .
