@@ -1,0 +1,15 @@
+# Minimal test Dockerfile - just try to install dependencies
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install OpenSSL
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Copy only package files
+COPY package.json ./
+
+# Try minimal install
+RUN npm install --loglevel=verbose
+
+CMD ["node", "--version"]
