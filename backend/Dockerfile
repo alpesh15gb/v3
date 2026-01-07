@@ -15,14 +15,7 @@ RUN npm install --production=false
 # Copy source code
 COPY . .
 
-# Set required environment variables for Prisma
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy?schema=public"
-ENV PRISMA_CLI_BINARY_TARGETS="linux-musl-openssl-3.0.x,debian-openssl-3.0.x"
-
-# Generate Prisma Client (now that all files are present)
-RUN npx prisma generate
-
-# Build TypeScript
+# Build TypeScript (skip prisma generate for now, do it at runtime)
 RUN npm run build
 
 # Production Stage
@@ -38,6 +31,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
+# Create startup script that generates Prisma client and starts the app
+RUN echo '#!/bin/sh\necho "Generating Prisma Client..."\nnpx prisma generate\necho "Starting application..."\nnode dist/server.js' > /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE 5000
 
-CMD ["node", "dist/server.js"]
+CMD ["/app/start.sh"]
