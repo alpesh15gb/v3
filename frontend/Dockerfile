@@ -4,7 +4,7 @@ FROM node:20-slim AS builder
 WORKDIR /app
 
 # Accept build argument
-ARG VITE_API_URL=http://localhost:5001/api
+ARG VITE_API_URL=http://82.112.236.81:5001/api
 
 # Set as environment variable for Vite build
 ENV VITE_API_URL=${VITE_API_URL}
