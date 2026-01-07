@@ -25,7 +25,7 @@ export const createLeaveType = async (req: Request, res: Response) => {
         const leaveType = await prisma.leaveType.create({ data });
         res.status(201).json(leaveType);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -50,7 +50,7 @@ export const applyLeave = async (req: Request, res: Response) => {
         const leaveRequest = await prisma.leaveRequest.create({ data });
         res.status(201).json(leaveRequest);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };

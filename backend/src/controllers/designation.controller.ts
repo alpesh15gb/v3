@@ -23,7 +23,7 @@ export const createDesignation = async (req: Request, res: Response) => {
         const designation = await prisma.designation.create({ data });
         res.status(201).json(designation);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -65,7 +65,7 @@ export const updateDesignation = async (req: Request, res: Response) => {
         });
         res.json(designation);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };

@@ -23,7 +23,7 @@ export const createLocation = async (req: Request, res: Response) => {
         const location = await prisma.location.create({ data });
         res.status(201).json(location);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -65,7 +65,7 @@ export const updateLocation = async (req: Request, res: Response) => {
         });
         res.json(location);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };

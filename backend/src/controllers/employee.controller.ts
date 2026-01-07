@@ -33,7 +33,7 @@ export const createEmployee = async (req: Request, res: Response) => {
         const employee = await prisma.employee.create({ data });
         res.status(201).json(employee);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
@@ -95,7 +95,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
         });
         res.json(employee);
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         res.status(500).json({ message: "Internal server error" });
     }
 };

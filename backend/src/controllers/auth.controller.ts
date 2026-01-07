@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
 
         res.json({ token, user: { id: employee.id, role: employee.role, name: employee.firstName } });
     } catch (error: any) {
-        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.errors });
+        if (error instanceof z.ZodError) return res.status(400).json({ errors: error.issues });
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
